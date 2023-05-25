@@ -65,6 +65,8 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
+  'windwp/nvim-ts-autotag',
+
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -72,19 +74,34 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+  'christoomey/vim-tmux-navigator',
+  -- mini
+  {
+    'echasnovski/mini.indentscope',
+    config = function()
+      require('mini.indentscope').setup()
+    end,
+  },
+  {
+    'echasnovski/mini.trailspace',
+    config = function()
+      require('mini.trailspace').setup()
+    end,
+  },
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
+  'jayp0521/mason-null-ls.nvim',
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
-      { 'williamboman/mason.nvim', config = true },
+      { 'williamboman/mason.nvim', config = true, build = ':MasonUpdate' },
       'williamboman/mason-lspconfig.nvim',
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -108,7 +125,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',          opts = {} },
   {
     -- Adds git releated signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -164,7 +181,7 @@ require('lazy').setup({
   },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',         opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
   { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
@@ -210,7 +227,7 @@ require('lazy').setup({
 -- NOTE: You can change these options as you wish!
 
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.o.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
@@ -247,6 +264,37 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+vim.opt.title = true
+vim.opt.autoindent = true
+vim.opt.backup = false
+vim.opt.showcmd = true
+vim.opt.cmdheight = 1
+vim.opt.laststatus = 2
+vim.opt.expandtab = true
+vim.opt.scrolloff = 10
+vim.opt.shell = 'fish'
+vim.opt.backupskip = '/tmp/*/private/tmp/*'
+vim.opt.inccommand = 'split'
+vim.opt.ai = true -- Auto indent
+vim.opt.si = true -- Smart indent
+vim.opt.wrap = false
+vim.opt.backspace = 'start,eol,indent'
+vim.opt.path:append { '**' }
+vim.opt.wildignore:append { '*/node_modules/*' }
+-- recommended settings from nvim-tree documentation
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+-- change color for arrows in tree to light blue
+vim.cmd [[ highlight NvimTreeIndentMarker guifg=#3FC5FF ]]
+
+-- Turn off paste mode when leaving insert
+vim.api.nvim_create_autocmd('InsertLeave', {
+  pattern = '*',
+  command = 'set nopaste',
+})
+
+vim.opt.formatoptions:append { 'r' }
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -256,6 +304,26 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
+-- clear search highlights
+vim.keymap.set('n', '<leader>nh', ':nohl<CR>')
+
+-- delete single character without copying into register
+vim.keymap.set('n', 'x', '"_x')
+
+-- window management
+vim.keymap.set('n', '<leader>sv', '<C-w>v')                                                   -- split window vertically
+vim.keymap.set('n', '<leader>sh', '<C-w>s')                                                   -- split window horizontally
+vim.keymap.set('n', '<leader>sx', ':close<CR>')                                               -- close current split window
+
+vim.keymap.set('n', '<leader>to', ':tabnew<CR>')                                              -- open new tab
+vim.keymap.set('n', '<leader>tx', ':tabclose<CR>')                                            -- close current tab
+
+vim.keymap.set('n', '<leader>b', '<cmd>b#<CR>', { silent = true, noremap = true })            -- go to previous buffer
+vim.keymap.set('n', '<leader>sb', '<cmd>vertical sb#<CR>', { silent = true, noremap = true }) -- split and go to previous buffer
+
+-- nvim-tree
+vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', {}) -- toggle file explorer
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -371,7 +439,7 @@ require('nvim-treesitter.configs').setup {
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
+vim.keymap.set('n', '<leader>j', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
 -- [[ Configure LSP ]]
@@ -429,7 +497,8 @@ local servers = {
   -- gopls = {},
   -- pyright = {},
   -- rust_analyzer = {},
-  -- tsserver = {},
+  tsserver = {},
+  tailwindcss = {},
 
   lua_ls = {
     Lua = {
