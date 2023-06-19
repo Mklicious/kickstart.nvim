@@ -3,6 +3,12 @@ return {
 	config = function()
 		local null_ls = require 'null-ls'
 		local sources = {
+			null_ls.builtins.diagnostics.eslint_d.with {
+				-- ignore prettier warnings from eslint-plugin-prettier
+				filter = function(diagnostic)
+					return diagnostic.code ~= 'prettier/prettier'
+				end,
+			},
 			null_ls.builtins.formatting.prettier.with {
 				filetypes = {
 					'css',
