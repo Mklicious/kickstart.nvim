@@ -65,8 +65,6 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
-  'windwp/nvim-ts-autotag',
-
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
@@ -75,6 +73,23 @@ require('lazy').setup({
   'tpope/vim-sleuth',
 
   'christoomey/vim-tmux-navigator',
+
+  -- colorizer
+  {
+    'norcalli/nvim-colorizer.lua',
+    config = function()
+      require('colorizer').setup()
+    end,
+  },
+
+  -- autotag
+  {
+    'windwp/nvim-ts-autotag',
+    config = function()
+      require('nvim-ts-autotag').setup()
+    end,
+  },
+
   -- mini
   {
     'echasnovski/mini.indentscope',
@@ -277,6 +292,8 @@ vim.opt.backupskip = '/tmp/*/private/tmp/*'
 vim.opt.inccommand = 'split'
 vim.opt.ai = true -- Auto indent
 vim.opt.si = true -- Smart indent
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
 vim.opt.wrap = false
 vim.opt.backspace = 'start,eol,indent'
 vim.opt.path:append { '**' }
