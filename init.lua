@@ -74,6 +74,13 @@ require('lazy').setup({
 
   'christoomey/vim-tmux-navigator',
 
+  -- help to establish good commands
+  {
+    'm4xshen/hardtime.nvim',
+    event = 'VeryLazy',
+    opts = {},
+  },
+
   -- colorizer
   {
     'norcalli/nvim-colorizer.lua',
@@ -122,7 +129,6 @@ require('lazy').setup({
       'folke/neodev.nvim',
     },
   },
-
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -298,6 +304,7 @@ vim.opt.wrap = false
 vim.opt.backspace = 'start,eol,indent'
 vim.opt.path:append { '**' }
 vim.opt.wildignore:append { '*/node_modules/*' }
+vim.opt.relativenumber = true
 -- recommended settings from nvim-tree documentation
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -341,6 +348,10 @@ vim.keymap.set('n', '<leader>sb', '<cmd>vertical sb#<CR>', { silent = true, nore
 
 -- nvim-tree
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', {}) -- toggle file explorer
+
+-- vertical motion
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { noremap = true })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { noremap = true })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
