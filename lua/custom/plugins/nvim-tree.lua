@@ -8,6 +8,7 @@ return {
 		local nvimtree = require 'nvim-tree'
 		-- configure nvim-tree
 		nvimtree.setup {
+			view = { adaptive_size = true },
 			-- change folder arrow icons
 			renderer = {
 				icons = {

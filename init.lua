@@ -183,7 +183,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'onedark',
+        theme = 'palenight',
         component_separators = '|',
         section_separators = '',
       },
@@ -565,6 +565,7 @@ mason_lspconfig.setup_handlers {
 local cmp = require 'cmp'
 local luasnip = require 'luasnip'
 require('luasnip.loaders.from_vscode').lazy_load()
+require('luasnip.loaders.from_snipmate').lazy_load()
 luasnip.config.setup {}
 
 cmp.setup {
